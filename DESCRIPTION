@@ -8,6 +8,7 @@ Authors@R:
            email = "jkeane@gmail.com")
 Description: What the package does (one paragraph).
 License: MIT + file LICENSE
+Suggests: xml2
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
