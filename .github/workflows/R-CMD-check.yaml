@@ -32,7 +32,7 @@ jobs:
       - uses: r-lib/actions/setup-tinytex@master
 
       - name: Install xml2 from github
-        if: matrix.config.os == 'macOS-latest' && needs.R-CMD-check-bioc.outputs.rversion == 'devel'
+        if: matrix.config.os == 'macOS-latest' && matrix.config.r == 'devel'
         run: Rscript -e "remotes::install_github('r-lib/xml2')"
 
       - name: Install dependencies
