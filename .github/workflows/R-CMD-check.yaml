@@ -31,12 +31,12 @@ jobs:
 
       - uses: r-lib/actions/setup-tinytex@master
 
+      - name: Install dependencies
+        run: Rscript -e "install.packages('remotes')" -e "remotes::install_deps(dependencies = TRUE)" -e "remotes::install_cran('rcmdcheck')"
+
       - name: Install xml2 from github
         if: matrix.config.os == 'macOS-latest' && matrix.config.r == 'devel'
         run: Rscript -e "remotes::install_github('r-lib/xml2')"
-
-      - name: Install dependencies
-        run: Rscript -e "install.packages('remotes')" -e "remotes::install_deps(dependencies = TRUE)" -e "remotes::install_cran('rcmdcheck')"
 
       - name: Check
         run: Rscript -e "rcmdcheck::rcmdcheck(error_on = 'warning', check_dir = 'check')"
