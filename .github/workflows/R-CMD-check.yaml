@@ -26,13 +26,10 @@ jobs:
           r-version: ${{ matrix.config.r }}
 
       - name: path
-        run: path
+        run: echo path
 
       - name: Install dependencies
         run: Rscript -e "install.packages('remotes')" -e "remotes::install_deps(dependencies = TRUE, type = 'source')" -e "remotes::install_cran('rcmdcheck')"
-
-      - name: path again
-        run: path
 
       - name: Check
         run: Rscript -e "rcmdcheck::rcmdcheck(args = '${{ matrix.config.args }}', error_on = 'note', check_dir = 'check')"
