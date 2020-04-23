@@ -26,7 +26,11 @@ jobs:
           r-version: ${{ matrix.config.r }}
 
       - name: path
-        run: $Env:Path
+        run: |
+          $Env:Path
+          Get-ChildItem -Path C:/Rtools/ -Force
+          Get-ChildItem -Path C:/Rtools/mingw_32/ -Force
+          Get-ChildItem -Path C:/Rtools/mingw_32/bin/ -Force
 
       - name: path from inside R
         run: Rscript -e "Sys.getenv('PATH')" -e "Sys.which('make')" -e "R <- file.path(R.home('bin'), 'R'); system2(R, c('CMD', 'config', 'CC'))"
