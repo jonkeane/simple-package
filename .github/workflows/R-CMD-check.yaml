@@ -28,6 +28,7 @@ jobs:
       - name: path
         run: |
           $Env:Path
+          Get-ChildItem -Path C:/ -Force
           Get-ChildItem -Path C:/Rtools/ -Force
           Get-ChildItem -Path C:/Rtools/mingw_32/ -Force
           Get-ChildItem -Path C:/Rtools/mingw_32/bin/ -Force
