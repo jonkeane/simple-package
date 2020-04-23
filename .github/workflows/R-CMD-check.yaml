@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - uses: jonkeane/actions/setup-r@master
+      - uses: jonkeane/actions/setup-r@rtools40-fix
         with:
           r-version: ${{ matrix.config.r }}
 
