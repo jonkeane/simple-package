@@ -28,6 +28,8 @@ jobs:
       - name: path
         run: |
           $Env:Path
+          type C:\rtools_install.log
+          Get-ChildItem -Path C:/ -Force
 
       - name: path from inside R
         run: Rscript -e "Sys.getenv('PATH')" -e "Sys.which('make')" -e "R <- file.path(R.home('bin'), 'R'); system2(R, c('CMD', 'config', 'CC'))"
