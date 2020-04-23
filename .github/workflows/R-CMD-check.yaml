@@ -28,7 +28,7 @@ jobs:
       - name: path
         run: |
           $Env:Path
-          type C:/rtools_install.log
+          type C:\rtools_install.log
           Get-ChildItem -Path C:/ -Force
 
       - name: path from inside R
