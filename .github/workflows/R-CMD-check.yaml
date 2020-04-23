@@ -28,6 +28,9 @@ jobs:
       - name: path
         run: $Env:Path
 
+      - name: path from inside R
+        run: Rscript -e "Sys.getenv('PATH')"
+
       - name: Install dependencies
         run: Rscript -e "install.packages('remotes')" -e "remotes::install_deps(dependencies = TRUE, type = 'source')" -e "remotes::install_cran('rcmdcheck')"
 
