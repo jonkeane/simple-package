@@ -25,15 +25,6 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
 
-      - name: path
-        run: |
-          $Env:Path
-          type C:\rtools_install.log
-          Get-ChildItem -Path C:/ -Force
-
-      - name: path from inside R
-        run: Rscript -e "Sys.getenv('PATH')" -e "Sys.which('make')" -e "R <- file.path(R.home('bin'), 'R'); system2(R, c('CMD', 'config', 'CC'))"
-
       - name: Install dependencies
         run: Rscript -e "install.packages('remotes')" -e "remotes::install_deps(dependencies = TRUE, type = 'source')" -e "remotes::install_cran('rcmdcheck')"
 
