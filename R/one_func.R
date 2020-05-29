@@ -1,11 +1,24 @@
-#' One function
+#' Get random airline(s)
 #'
-#' A noop function that returns its only input.
+#' @param n the number of airlines to get (defaults to 1)
 #'
-#' @param x the thing to be returned
-#'
-#' @return `x`, the input
+#' @return a dataframe with airlines from the DB
 #' @export
-one_function <- function(x) {
-    return(x)
+get_an_airline <- function(n = 1) {
+    con <- DBI::dbConnect(RPostgres::Postgres(), dbname = "nycflights")
+    on.exit(DBI::dbDisconnect(con))
+
+    query <- paste0(
+        "SELECT carrier, name FROM rpostgres.airlines ",
+        " ORDER BY random() LIMIT ",
+        n
+    )
+
+    out <- dbGetQuery(con, query)
+
+    if (out$name == "Testy McAirline") {
+        stop("This is the test airline \U1F643")
+  }
+
+  return(out)
 }
