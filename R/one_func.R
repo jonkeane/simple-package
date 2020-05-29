@@ -14,7 +14,7 @@ get_an_airline <- function(n = 1) {
         n
     )
 
-    out <- dbGetQuery(con, query)
+    out <- DBI::dbGetQuery(con, query)
 
     if (out$name == "Testy McAirline") {
         stop("This is the test airline \U1F643")
