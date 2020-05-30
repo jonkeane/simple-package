@@ -7,3 +7,10 @@ with_mock_db({
         expect_equal(one_airline$name, "AirTran Airways Corporation")
     })
 })
+
+
+with_mock_path(test_path("db_issues"), {
+    with_mock_db({
+        expect_error(get_an_airline())
+    })
+})
