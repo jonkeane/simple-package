@@ -8,8 +8,12 @@ Authors@R:
            email = "jkeane@gmail.com")
 Description: What the package does (one paragraph).
 License: MIT + file LICENSE
-Suggests: sys
+Imports: cli
+Suggests: 
+    testthat (>= 3.0.0),
+    sys
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.0.1
+Config/testthat/edition: 3
