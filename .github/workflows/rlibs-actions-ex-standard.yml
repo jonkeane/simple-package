@@ -34,12 +34,12 @@ jobs:
       - uses: r-lib/actions/setup-tinytex@v1
         if: contains(matrix.config.args, 'no-manual') == false
 
-     - name: Install databases (macOS)
-       run: |
-         brew update || brew update
-         brew install mariadb
-         brew services start mariadb
-       if: contains(runner.os, 'macOS')
+      - name: Install databases (macOS)
+        run: |
+          brew update || brew update
+          brew install mariadb
+          brew services start mariadb
+        if: contains(runner.os, 'macOS')
 
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
