@@ -12,60 +12,28 @@ jobs:
       fail-fast: false
       matrix:
         config:
+          - {os: macOS-11,   r: '3.6'}
+          - {os: macOS-11,   r: '4.0'}
+          - {os: macOS-11,   r: 'oldrel-1'}
+          - {os: macOS-11,   r: 'release'}
           - {os: macOS-latest,   r: '3.6'}
           - {os: macOS-latest,   r: '4.0'}
           - {os: macOS-latest,   r: 'oldrel-1'}
           - {os: macOS-latest,   r: 'release'}
 
     env:
-      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      DBROOTPASS: r2N5y7V*
-      DITTODB_ENABLE_PG_TESTS: true
-      DITTODB_ENABLE_MARIA_TESTS: true
 
     steps:
       - uses: actions/checkout@v2
+
+      - uses: r-lib/actions/setup-pandoc@v1
 
       - uses: r-lib/actions/setup-r@v1
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
-
-      - uses: r-lib/actions/setup-pandoc@v1
-
-      - uses: r-lib/actions/setup-tinytex@v1
-        if: contains(matrix.config.args, 'no-manual') == false
-
-      - name: Install databases (macOS)
-        run: |
-          brew update || brew update
-          rm -f /etc/my.cnf
-          brew install mariadb
-          brew services start mariadb
-          mkdir /usr/local/etc/my.cnf.d
-          sleep 10
-          # TODO: add dbrootpass if it doesn't exist?
-          sudo mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$DBROOTPASS';"
-          rm -rf /usr/local/var/postgres
-          # for odbc tests, we need to also install the odbc drivers
-          # we might also need to install unixodbc here if it's not already installed
-          # we might also need to install postgresql here if it's not already installed
-          brew install psqlodbc
-          cat <<EOT >> /usr/local/etc/odbcinst.ini
-          [PostgreSQL Unicode]
-          Description     = PostgreSQL ODBC driver (Unicode 9.2)
-          Driver          = /usr/local/lib/psqlodbcw.so
-          Debug           = 0
-          CommLog         = 1
-          UsageCount      = 1
-          EOT
-          initdb /usr/local/var/postgres
-          pg_ctl -D /usr/local/var/postgres start
-          /usr/local/opt/postgres/bin/createuser -s postgres
-          sleep 10
-        if: contains(runner.os, 'macOS')
 
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
