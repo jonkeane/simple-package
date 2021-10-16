@@ -35,11 +35,11 @@ jobs:
         if: contains(matrix.config.args, 'no-manual') == false
 
      - name: Install databases (macOS)
-        run: |
-           brew update || brew update
-           brew install mariadb
-           brew services start mariadb
-        if: contains(runner.os, 'macOS')
+      run: |
+        brew update || brew update
+        brew install mariadb
+        brew services start mariadb
+      if: contains(runner.os, 'macOS')
 
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
