@@ -18,7 +18,11 @@ jobs:
           - {os: macOS-latest,   r: 'release'}
 
     env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      DBROOTPASS: r2N5y7V*
+      DITTODB_ENABLE_PG_TESTS: true
+      DITTODB_ENABLE_MARIA_TESTS: true
 
     steps:
       - uses: actions/checkout@v2
@@ -37,8 +41,30 @@ jobs:
       - name: Install databases (macOS)
         run: |
           brew update || brew update
+          rm -f /etc/my.cnf
           brew install mariadb
           brew services start mariadb
+          mkdir /usr/local/etc/my.cnf.d
+          sleep 10
+          # TODO: add dbrootpass if it doesn't exist?
+          sudo mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$DBROOTPASS';"
+          rm -rf /usr/local/var/postgres
+          # for odbc tests, we need to also install the odbc drivers
+          # we might also need to install unixodbc here if it's not already installed
+          # we might also need to install postgresql here if it's not already installed
+          brew install psqlodbc
+          cat <<EOT >> /usr/local/etc/odbcinst.ini
+          [PostgreSQL Unicode]
+          Description     = PostgreSQL ODBC driver (Unicode 9.2)
+          Driver          = /usr/local/lib/psqlodbcw.so
+          Debug           = 0
+          CommLog         = 1
+          UsageCount      = 1
+          EOT
+          initdb /usr/local/var/postgres
+          pg_ctl -D /usr/local/var/postgres start
+          /usr/local/opt/postgres/bin/createuser -s postgres
+          sleep 10
         if: contains(runner.os, 'macOS')
 
       - uses: r-lib/actions/setup-r-dependencies@v1
