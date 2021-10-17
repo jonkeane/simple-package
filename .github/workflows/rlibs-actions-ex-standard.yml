@@ -39,7 +39,7 @@ jobs:
         run: |
           sudo mkdir -p /usr/local/bin
           sudo cd /usr/local/bin
-          sudo rm -f R Rscript
+          sudo ls -la
           sudo ln -s /Library/Frameworks/R.framework/Resources/bin/R .
           sudo ln -s /Library/Frameworks/R.framework/Resources/bin/Rscript .
 
