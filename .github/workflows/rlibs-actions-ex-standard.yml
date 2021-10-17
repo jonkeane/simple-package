@@ -38,7 +38,7 @@ jobs:
       - name: create symlinks
         run: |
           sudo mkdir -p /usr/local/bin
-          sudo cd /usr/local/bin
+          cd /usr/local/bin
           sudo ls -la
           sudo ln -s /Library/Frameworks/R.framework/Resources/bin/R .
           sudo ln -s /Library/Frameworks/R.framework/Resources/bin/Rscript .
