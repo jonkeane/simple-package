@@ -35,6 +35,14 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
+      - name: create symlinks
+        run: |
+          sudo mkdir -p /usr/local/bin
+          sudo cd /usr/local/bin
+          sudo rm -f R Rscript
+          sudo ln -s /Library/Frameworks/R.framework/Resources/bin/R .
+          sudo ln -s /Library/Frameworks/R.framework/Resources/bin/Rscript .
+
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
           extra-packages: rcmdcheck
