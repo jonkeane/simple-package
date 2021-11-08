@@ -27,7 +27,9 @@ jobs:
           needs: website
 
       - name: Install dev pkgdown
-        run: remotes::install_github("r-lib/pkgdown")
+        run: |
+          install.packages('remotes')
+          remotes::install_github('r-lib/pkgdown')
         shell: Rscript {0}
 
       - name: Deploy package
