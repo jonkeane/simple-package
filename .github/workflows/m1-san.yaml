@@ -1,4 +1,21 @@
-name: m1-san-test
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+name: M1-Sanitizer
 on: push
 
 jobs:
@@ -9,6 +26,15 @@ jobs:
       fail-fast: false
 
     steps:
+      - name: Checkout Arrow
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          path: arrow
+          repository: jonkeane/arrow
+          ref: 17313a502cffd58fa28dc393110a31279686226a
+          submodules: recursive
+
       - name: Configure dependencies (macos)
         run: |
           brew install openssl
@@ -18,13 +44,13 @@ jobs:
           r-version: devel
       - name: Install dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
-        if: false
         with:
           cache: false # cache does not work on across branches
+          working-directory: arrow/r
           extra-packages: |
             any::rcmdcheck
             any::sys
-      - name: Compile with sanitizers
+      - name: Setup the sanitizer
         run: |
           # From rhub/rhub's m1-san:
           # https://github.com/r-hub/actions/blob/ab9b2fb5021f43bfd0ee977932e0a14d25f6e59e/run-check/scripts/mac-asan.sh
@@ -32,7 +58,6 @@ jobs:
           sudo rm -f /Applications/Xcode.app
           sudo ln -sfF /Applications/Xcode_16.3.app /Applications/Xcode.app
           sudo xcode-select -s /Applications/Xcode.app
-
           # Compile with sanitizers ---------------------------------------
           mkdir -p ~/.R
           cat >> ~/.R/Makevars <<EOF
@@ -45,11 +70,9 @@ jobs:
           CXX23+=-mmacos-version-min=15 -fsanitize=address,undefined
           REC_INSTALL_OPT=--dsym
           EOF
-
           # Need to patch the shell script, because these env vars --------
           # do not go through a shell because of Apple security.
           R=$(readlink `which R`)
-          echo "R: ${R}"
           head -1 ${R} >> /tmp/R
           cat >> /tmp/R <<EOF
           export DYLD_FORCE_FLAT_NAMESPACE=1
@@ -58,8 +81,21 @@ jobs:
           cat ${R} >> /tmp/R
           chmod +x /tmp/R
           sudo mv /tmp/R ${R}
-          R -e "ls()"
-      - name: another test
-        run: R -e "ls()"
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
+      - name: Install and check
+        env:
+          R_BIN: R
+          LIBARROW_BINARY: FALSE
+        run: |
+          export ARROW_SOURCE_HOME=$(pwd)/arrow
+          export INSTALL_ARGS="--no-test-load"
+          arrow/ci/scripts/r_sanitize.sh arrow
+      - name: Save the test output
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-output
+          path: |
+            arrow/r/tests/
+            arrow/r/arrow.Rcheck/
+            !arrow/r/arrow.Rcheck/00_pkg_src/
+            !arrow/r/arrow.Rcheck/arrow/
+        if: always()
