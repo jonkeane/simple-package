@@ -46,8 +46,6 @@ jobs:
           REC_INSTALL_OPT=--dsym
           EOF
 
-          ls -laR /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang
-
           # Need to patch the shell script, because these env vars --------
           # do not go through a shell because of Apple security.
           R=$(readlink `which R`)
@@ -61,5 +59,7 @@ jobs:
           chmod +x /tmp/R
           sudo mv /tmp/R ${R}
           R -e "ls()"
+      - name: another test
+        run: R -e "ls()"
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
