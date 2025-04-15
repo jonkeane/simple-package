@@ -1,7 +1,6 @@
 name: m1-san-test
 on: push
 
-
 jobs:
   macos-cran:
     name: "m1-san on macOS"
@@ -10,8 +9,6 @@ jobs:
       fail-fast: false
 
     steps:
-      {{ macros.github_checkout_arrow()|indent }}
-
       - name: Configure dependencies (macos)
         run: |
           brew install openssl
