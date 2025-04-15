@@ -21,7 +21,7 @@ on: push
 jobs:
   macos-cran:
     name: "m1-san on macOS"
-    runs-on: macOS-15
+    runs-on: macOS-14
     strategy:
       fail-fast: false
 
@@ -54,9 +54,9 @@ jobs:
         run: |
           # From rhub/rhub's m1-san:
           # https://github.com/r-hub/actions/blob/ab9b2fb5021f43bfd0ee977932e0a14d25f6e59e/run-check/scripts/mac-asan.sh
-          # Use XCode 16.3 ------------------------------------------------
+          # Use XCode 16.2 ------------------------------------------------
           sudo rm -f /Applications/Xcode.app
-          sudo ln -sfF /Applications/Xcode_16.3.app /Applications/Xcode.app
+          sudo ln -sfF /Applications/Xcode_16.2.app /Applications/Xcode.app
           sudo xcode-select -s /Applications/Xcode.app
           # Compile with sanitizers ---------------------------------------
           mkdir -p ~/.R
@@ -76,7 +76,7 @@ jobs:
           head -1 ${R} >> /tmp/R
           cat >> /tmp/R <<EOF
           export DYLD_FORCE_FLAT_NAMESPACE=1
-          export DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+          export DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/16/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
           EOF
           cat ${R} >> /tmp/R
           chmod +x /tmp/R
