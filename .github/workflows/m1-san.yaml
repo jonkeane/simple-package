@@ -1,0 +1,68 @@
+name: m1-san-test
+on: push
+
+
+jobs:
+  macos-cran:
+    name: "m1-san on macOS"
+    runs-on: macOS-15
+    strategy:
+      fail-fast: false
+
+    steps:
+      {{ macros.github_checkout_arrow()|indent }}
+
+      - name: Configure dependencies (macos)
+        run: |
+          brew install openssl
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+          r-version: devel
+      - name: Install dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
+        if: false
+        with:
+          cache: false # cache does not work on across branches
+          extra-packages: |
+            any::rcmdcheck
+            any::sys
+      - name: Compile with sanitizers
+        run: |
+          # From rhub/rhub's m1-san:
+          # https://github.com/r-hub/actions/blob/ab9b2fb5021f43bfd0ee977932e0a14d25f6e59e/run-check/scripts/mac-asan.sh
+          # Use XCode 16.3 ------------------------------------------------
+          sudo rm -f /Applications/Xcode.app
+          sudo ln -sfF /Applications/Xcode_16.3.app /Applications/Xcode.app
+          sudo xcode-select -s /Applications/Xcode.app
+
+          # Compile with sanitizers ---------------------------------------
+          mkdir -p ~/.R
+          cat >> ~/.R/Makevars <<EOF
+          CC+=-mmacos-version-min=15 -fsanitize=address,undefined
+          CXX+=-mmacos-version-min=15 -fsanitize=address,undefined
+          CXX11+=-mmacos-version-min=15 -fsanitize=address,undefined
+          CXX14+=-mmacos-version-min=15 -fsanitize=address,undefined
+          CXX17+=-mmacos-version-min=15 -fsanitize=address,undefined
+          CXX20+=-mmacos-version-min=15 -fsanitize=address,undefined
+          CXX23+=-mmacos-version-min=15 -fsanitize=address,undefined
+          REC_INSTALL_OPT=--dsym
+          EOF
+
+          ls -laR /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang
+
+          # Need to patch the shell script, because these env vars --------
+          # do not go through a shell because of Apple security.
+          R=$(readlink `which R`)
+          echo "R: ${R}"
+          head -1 ${R} >> /tmp/R
+          cat >> /tmp/R <<EOF
+          export DYLD_FORCE_FLAT_NAMESPACE=1
+          export DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+          EOF
+          cat ${R} >> /tmp/R
+          chmod +x /tmp/R
+          sudo mv /tmp/R ${R}
+          R -e "ls()"
+      - name: Setup upterm session
+        uses: lhotari/action-upterm@v1
