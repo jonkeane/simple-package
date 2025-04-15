@@ -61,5 +61,5 @@ jobs:
           chmod +x /tmp/R
           sudo mv /tmp/R ${R}
           R -e "ls()"
-      - name: Setup upterm session
-        uses: lhotari/action-upterm@v1
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
