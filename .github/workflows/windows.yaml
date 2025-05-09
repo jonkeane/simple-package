@@ -32,6 +32,9 @@ jobs:
           # If C:\R exists, move its contents (this requires admin privileges in normal circumstances)
           if (Test-Path "C:\R") {
               Move-Item -Path "C:\R\*" -Destination "$rDir" -Force
+
+              echo "Files after move in destination directory ($rDir):"
+              Get-ChildItem -Path "$rDir" -Recurse | Select-Object -ExpandProperty FullName
           } else {
               echo "C:\R folder not found"
           }
