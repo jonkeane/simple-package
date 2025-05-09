@@ -22,7 +22,19 @@ jobs:
         run: |
           echo "Current PATH:"
           echo $env:PATH
-      - name: List C:\Program Files contents
+      - name: Update PATH with R directory
         run: |
-          echo "Contents of C:\Program Files:"
-          Get-ChildItem -Path "C:\Program Files" -Recurse | Select-Object FullName
+          $rDir = Get-ChildItem "C:\Program Files\R" -Directory -Filter "R-*" | Select-Object -First 1 -ExpandProperty FullName
+          if ($rDir) {
+            $binPath = Join-Path $rDir "bin"
+            echo "Found R bin directory at: $binPath"
+            $newPath = $env:PATH -replace "C:\\R\\bin", "$binPath"
+            echo "PATH=$newPath" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+            echo "Updated PATH to use $binPath instead of C:\R\bin"
+          } else {
+            echo "No R directory found matching R-* pattern"
+          }
+      - name: Verify updated PATH
+        run: |
+          echo "Updated PATH:"
+          echo $env:PATH
