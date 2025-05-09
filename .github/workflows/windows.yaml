@@ -26,12 +26,11 @@ jobs:
         run: |            
           # Create bin path
           $rDir = "C:\Program Files\R\R-latest"
-          $binPath = Join-Path $rDir "bin"
           echo "R bin directory: $binPath"
           
           # If C:\R exists, move its contents (this requires admin privileges in normal circumstances)
           if (Test-Path "C:\R") {
-              Move-Item -Path "C:\R\*" -Destination "$rDir" -Force
+              Move-Item -Path "C:\R" -Destination "$rDir" -Force
 
               echo "Files after move in destination directory ($rDir):"
               Get-ChildItem -Path "$rDir" -Recurse | Select-Object -ExpandProperty FullName
