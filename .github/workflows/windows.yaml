@@ -6,9 +6,7 @@ jobs:
   native:
     strategy:
       fail-fast: false
-      matrix:
-        runner: [windows-latest]
-    runs-on: ${{ matrix.runner }}
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
         with:
@@ -24,3 +22,7 @@ jobs:
         run: |
           echo "Current PATH:"
           echo $env:PATH
+      - name: List C:\Program Files contents
+        run: |
+          echo "Contents of C:\Program Files:"
+          Get-ChildItem -Path "C:\Program Files" -Recurse | Select-Object FullName
