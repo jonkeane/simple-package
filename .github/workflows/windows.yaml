@@ -48,27 +48,9 @@ jobs:
         run: |
           echo "Updated PATH:"
           echo $env:PATH
-      - name: Get R binary path
+      - name: Sys.info
         run: |
-          # First check if the Rscript.exe exists at the expected path
-          $rscriptPath = "C:\Program Files\R\R-latest\Rscript.exe"
-          if (Test-Path $rscriptPath) {
-              echo "Found Rscript at expected path: $rscriptPath"
-              & $rscriptPath -e 'cat("R binary path:", file.path(R.home("bin"), "R.exe"), "\n")'
-              & $rscriptPath -e 'cat("R home directory:", R.home(), "\n")'
-              & $rscriptPath -e 'cat("R version:", R.version$version.string, "\n")'
-          } else {
-              echo "Rscript not found at expected path. Trying with which.exe or where.exe..."
-              $whereRscript = where.exe Rscript 2>$null
-              if ($whereRscript) {
-              echo "Found Rscript at: $whereRscript"
-              Rscript -e 'cat("R binary path:", file.path(R.home("bin"), "R.exe"), "\n")'
-              Rscript -e 'cat("R home directory:", R.home(), "\n")'
-              Rscript -e 'cat("R version:", R.version$version.string, "\n")'
-              } else {
-              echo "ERROR: Could not find Rscript.exe in PATH"
-              echo "Current PATH: $env:PATH"
-              echo "Available directories in C:\Program Files\R:"
-              Get-ChildItem "C:\Program Files\R" -ErrorAction SilentlyContinue | Format-Table Name, FullName
-              }
-          }
+          R.exe -e 'Sys.info()'
+          R.exe -e 'cat("R binary path:", file.path(R.home("bin"), "R.exe"), "\n")'
+          R.exe -e 'cat("R home directory:", R.home(), "\n")'
+          R.exe -e 'cat("R version:", R.version$version.string, "\n")'
