@@ -48,9 +48,6 @@ jobs:
         run: |
           echo "Updated PATH:"
           echo $env:PATH
-      - name: Sys.info
-        run: |
-          Rscript -e 'Sys.info()'
       - name: Get R binary path
         run: |
           # First check if the Rscript.exe exists at the expected path
