@@ -23,18 +23,29 @@ jobs:
           echo "Current PATH:"
           echo $env:PATH
       - name: Update PATH with R directory
-        run: |
-          $rDir = Get-ChildItem "C:\Program Files\R" -Directory -Filter "R-*" | Select-Object -First 1 -ExpandProperty FullName
-          if ($rDir) {
-            $binPath = Join-Path $rDir "bin"
-            echo "Found R bin directory at: $binPath"
-            $newPath = $env:PATH -replace "C:\\R\\bin", "$binPath"
-            echo "PATH=$newPath" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-            echo "Updated PATH to use $binPath instead of C:\R\bin"
+        run: |            
+          # Create bin path
+          $rDir = "C:\R\R-latest"
+          $binPath = Join-Path $rDir "bin"
+          echo "R bin directory: $binPath"
+          
+          # If C:\R exists, move its contents (this requires admin privileges in normal circumstances)
+          if (Test-Path "C:\R") {
+              Move-Item -Path "C:\R\*" -Destination "$rDir" -Force
           } else {
-            echo "No R directory found matching R-* pattern"
+              echo "C:\R folder not found"
+          }
+          
+          # Add the new path to the PATH environment variable (prepending to give it priority)
+          $newPath = "$binPath;" + $env:PATH
+          echo "PATH=$newPath" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          
+          echo "Updated PATH to include $binPath"
           }
       - name: Verify updated PATH
         run: |
           echo "Updated PATH:"
           echo $env:PATH
+      - name: Sys.info
+        run: |
+          Rscript -e 'Sys.info()'
