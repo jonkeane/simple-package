@@ -51,7 +51,7 @@ jobs:
       - name: Get R binary path
         run: |
           # First check if the Rscript.exe exists at the expected path
-          $rscriptPath = "C:\Program Files\R\R-latest\bin\Rscript.exe"
+          $rscriptPath = "C:\Program Files\R\R-latest\Rscript.exe"
           if (Test-Path $rscriptPath) {
               echo "Found Rscript at expected path: $rscriptPath"
               & $rscriptPath -e 'cat("R binary path:", file.path(R.home("bin"), "R.exe"), "\n")'
