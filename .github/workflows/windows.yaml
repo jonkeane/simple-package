@@ -50,6 +50,6 @@ jobs:
           Rscript -e 'Sys.info()'
       - name: Get R binary path
         run: |
-          C:\Program Files\R\R-latest\bin\Rscript -e 'cat("R binary path:", file.path(R.home("bin"), "R.exe"), "\n")'
-          C:\Program Files\R\R-latest\bin\Rscript -e 'cat("R home directory:", R.home(), "\n")'
-          C:\Program Files\R\R-latest\bin\Rscript -e 'cat("R version:", R.version$version.string, "\n")'
+          "C:\Program Files\R\R-latest\bin\Rscript.exe" -e 'cat("R binary path:", file.path(R.home("bin"), "R.exe"), "\n")'
+          "C:\Program Files\R\R-latest\bin\Rscript.exe" -e 'cat("R home directory:", R.home(), "\n")'
+          "C:\Program Files\R\R-latest\bin\Rscript.exe" -e 'cat("R version:", R.version$version.string, "\n")'
