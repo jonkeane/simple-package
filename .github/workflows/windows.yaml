@@ -25,7 +25,7 @@ jobs:
       - name: Update PATH with R directory
         run: |            
           # Create bin path
-          $rDir = "C:\R\R-latest"
+          $rDir = "C:\Program Files\R\R-latest"
           $binPath = Join-Path $rDir "bin"
           echo "R bin directory: $binPath"
           
@@ -48,3 +48,8 @@ jobs:
       - name: Sys.info
         run: |
           Rscript -e 'Sys.info()'
+      - name: Get R binary path
+        run: |
+          Rscript -e 'cat("R binary path:", file.path(R.home("bin"), "R.exe"), "\n")'
+          Rscript -e 'cat("R home directory:", R.home(), "\n")'
+          Rscript -e 'cat("R version:", R.version$version.string, "\n")'
